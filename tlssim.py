@@ -174,12 +174,12 @@ class parabola(object):
     Class that describes a parabola shape with axis of symmetry parallel to 
     vertical.
     """
-    def __init__(self, focus=60, vertex=(0,0,0)):
+    def __init__(self, focus=10, vertex=(0,0,0)):
         """
         Initialises a parabola object with focus and vertex given by inputs.
         Input:
-            focus (metres, float, default=60)
-            vertex (metres, 3-tuple of float, default=(0,0,0))
+            focus (metres, float, default=10)
+            vertex (metres, 3-tuple of float in (x,y,z), default=(0,0,0))
         Output:
             none
         """
@@ -194,14 +194,49 @@ class parabola(object):
             xdata (metres, np array of float)
             ydata (metres, np array of float)
         Output:
-            zdata (metres, np array of float)
+            zarray (metres, np array of float)
         """
         if xdata.shape != ydata.shape:
             raise ValueError('xdata and ydata do not have the same dimensions')
         
         self.xdata = xdata # m, metres
         self.ydata = ydata # m, metres
-        self.zarray = ((xdata - self.vertex[0])**2 + (ydata - self.vertex[1])**2) / (4.*self.focus) + self.vertex[2] # m, metres
+        self.zarray = ((self.xdata - self.vertex[0])**2 + (self.ydata - self.vertex[1])**2) / (4.*self.focus) + self.vertex[2] # m, metres
+        return self.zarray
+
+
+class dish(parabola):
+    """
+    Class that describes a parabolic dish with axis of symmetry parallel to 
+    vertical.
+    """
+    def __init__(self, focus=60, vertex=(0,0,0)):
+        """
+        Initialises a dish object with focus and vertex given by inputs.
+        Input:
+            focus (metres, float, default=60)
+            vertex (metres, 3-tuple of float in (x,y,z), default=(0,0,0))
+        Output:
+            none
+        """
+        parabola.__init__(self, focus=focus, vertex=vertex)
+        
+    def circsection(self, radius=50, centre=(50,50), res=0.1):
+        """
+        Returns a circular section of parabola centred at centre (x,y) with 
+        radius given by radius and resolution given by res.
+        Input:
+            radius (metres, float, default=50)
+            centre (metres, 2-tuple of float in (x,y), default=(50,50))
+            res (metres, float, default=0.1)
+        Output:
+            zarray (metres, np array of float)
+        """
+        self.radius=radius
+        self.centre=centre
+        self.xdata, self.ydata = np.meshgrid(np.arange(centre[0]-radius, centre[0]+radius, res), np.arange(centre[1]-radius, centre[1]+radius, res)) # m, metres
+        parabola.section(self, self.xdata, self.ydata)
+        self.zarray[((self.xdata-radius)**2 + (self.ydata-radius)**2)>radius**2] = np.nan # m, metres
         return self.zarray
         
 
@@ -213,8 +248,8 @@ class ball(object):
         """
         Initialises a ellipsoid object with centre and axes given by inputs.
         Input:
-            centre (metres, 3-tuple of float in x,y,z, default=(0,0,0))
-            radius (metres, float or 3-tuple of float in x,y,z, default=1)
+            centre (metres, 3-tuple of float in (x,y,z), default=(0,0,0))
+            radius (metres, float or 3-tuple of float in (x,y,z), default=1)
         Output:
             none
         """
@@ -242,7 +277,7 @@ class ball(object):
         
         self.xdata = xdata # m, metres
         self.ydata = ydata # m, metres
-        self.dome = self.radius[2] * np.sqrt((1 - ((self.xdata - self.centre[0])/self.radius[0])**2 - ((self.ydata - self.centre[1])/self.radius[1])**2))# m, metres
+        self.dome = self.radius[2] * np.sqrt((1 - ((self.xdata - self.centre[0])/self.radius[0])**2 - ((self.ydata - self.centre[1])/self.radius[1])**2)) # m, metres
         self.top = self.centre[2] + self.dome # m, metres
         self.bottom =  self.centre[2] - self.dome # m, metres
         return self.top, self.bottom     

@@ -236,7 +236,7 @@ class dish(parabola):
         self.centre=centre
         self.xdata, self.ydata = np.meshgrid(np.arange(centre[0]-radius, centre[0]+radius, res), np.arange(centre[1]-radius, centre[1]+radius, res)) # m, metres
         parabola.section(self, self.xdata, self.ydata)
-        self.zarray[((self.xdata-radius)**2 + (self.ydata-radius)**2)>radius**2] = np.nan # m, metres
+        self.zarray[((self.xdata-centre[0])**2 + (self.ydata-centre[1])**2)>radius**2] = np.nan # m, metres
         return self.zarray
         
 

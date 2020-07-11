@@ -194,9 +194,9 @@ class tls(object):
         self.Hoffset = k*(self.x1z/(Rarray*np.tan(Varray)) + self.x3/(Rarray*np.sin(Varray)) + self.x5z/np.tan(Varray) + 2*self.x6/np.sin(Varray) - self.x7/np.tan(Varray) - self.x8x*np.sin(Harray) + self.x8y*np.cos(Harray)) + (self.x1n/Rarray + self.x5n + self.x11a*np.cos(2*Harray) + self.x11b*np.sin(2*Harray)) # rad, radians
         self.Voffset = k*(self.x1n*np.cos(Varray)/Rarray + self.x2*np.cos(Varray)/Rarray + self.x4 + self.x5n*np.cos(Varray) + self.x9n*np.cos(Varray)) + (-self.x1z*np.sin(Varray)/Rarray - self.x5z*np.sin(Varray) - self.x9z*np.sin(Varray) + self.x12a*np.cos(2*Varray) + self.x12b*np.sin(2*Varray)) # rad, radians
         
-        self.Rerr = k*self.dx2*np.sin(Varray) + self.dx10 # m, metres
-        self.Herr = k*(self.dx1z/(Rarray*np.tan(Varray)) + self.dx3/(Rarray*np.sin(Varray)) + self.dx5z/np.tan(Varray) + 2*self.dx6/np.sin(Varray) - self.dx7/np.tan(Varray) - self.dx8x*np.sin(Harray) + self.dx8y*np.cos(Harray)) + (self.dx1n/Rarray + self.dx5n + self.dx11a*np.cos(2*Harray) + self.dx11b*np.sin(2*Harray)) # rad, radians
-        self.Verr = k*(self.dx1n*np.cos(Varray)/Rarray + self.dx2*np.cos(Varray)/Rarray + self.dx4 + self.dx5n*np.cos(Varray) + self.dx9n*np.cos(Varray)) + (-self.dx1z*np.sin(Varray)/Rarray - self.dx5z*np.sin(Varray) - self.dx9z*np.sin(Varray) + self.dx12a*np.cos(2*Varray) + self.dx12b*np.sin(2*Varray)) # rad, radians        
+        self.Rerr = np.abs( k*self.dx2*np.sin(Varray) + self.dx10 ) # m, metres
+        self.Herr = np.abs( k*(self.dx1z/(Rarray*np.tan(Varray)) + self.dx3/(Rarray*np.sin(Varray)) + self.dx5z/np.tan(Varray) + 2*self.dx6/np.sin(Varray) - self.dx7/np.tan(Varray) - self.dx8x*np.sin(Harray) + self.dx8y*np.cos(Harray)) + (self.dx1n/Rarray + self.dx5n + self.dx11a*np.cos(2*Harray) + self.dx11b*np.sin(2*Harray)) ) # rad, radians
+        self.Verr = np.abs( k*(self.dx1n*np.cos(Varray)/Rarray + self.dx2*np.cos(Varray)/Rarray + self.dx4 + self.dx5n*np.cos(Varray) + self.dx9n*np.cos(Varray)) + (-self.dx1z*np.sin(Varray)/Rarray - self.dx5z*np.sin(Varray) - self.dx9z*np.sin(Varray) + self.dx12a*np.cos(2*Varray) + self.dx12b*np.sin(2*Varray)) ) # rad, radians        
         
         self.Rdata = Rarray + self.Roffset # m, metres
         self.Hdata = Harray + self.Hoffset # rad, radians

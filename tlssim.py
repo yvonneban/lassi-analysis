@@ -156,17 +156,9 @@ class tls(object):
         if xdata.shape != ydata.shape or xdata.shape != zdata.shape or ydata.shape != zdata.shape:
             raise ValueError('data arrays do not have the same dimensions')
         
-        self.xdata = xdata - self.offset[0] # m, metres
-        self.ydata = ydata - self.offset[1] # m, metres
-        self.zdata = zdata - self.offset[2] # m, metres
-        
-        self.xerr = 0 # m, metres
-        self.yerr = 0 # m, metres
-        self.zerr = 0 # m, metres
-        
         Rarray = np.sqrt(self.xdata**2 + self.ydata**2 + self.zdata**2) # m, metres
         Harray = np.arctan2(self.ydata, self.xdata) # rad, radians
-        Varray = np.arccos(self.zdata/self.Rdata) # rad, radians
+        Varray = np.arccos(self.zdata/Rarray) # rad, radians
         return Rarray, Harray, Varray
     
     def scan(self, xdata, ydata, zdata):
@@ -183,7 +175,15 @@ class tls(object):
             Hdata (radians, np array of float)
             Vdata (radians, np array of float)
         """
-        Rarray, Harray, Varray = self.Cart_to_Sph(xdata, ydata, zdata)
+        self.xdata = xdata - self.offset[0] # m, metres
+        self.ydata = ydata - self.offset[1] # m, metres
+        self.zdata = zdata - self.offset[2] # m, metres
+        
+        self.xerr = 0 # m, metres
+        self.yerr = 0 # m, metres
+        self.zerr = 0 # m, metres
+        
+        Rarray, Harray, Varray = self.Cart_to_Sph(self.xdata, self.ydata, self.zdata)
         
         if self.backface:
             k=-1
@@ -196,7 +196,7 @@ class tls(object):
         
         self.Rerr = np.abs( k*self.dx2*np.sin(Varray) + self.dx10 ) # m, metres
         self.Herr = np.abs( k*(self.dx1z/(Rarray*np.tan(Varray)) + self.dx3/(Rarray*np.sin(Varray)) + self.dx5z/np.tan(Varray) + 2*self.dx6/np.sin(Varray) - self.dx7/np.tan(Varray) - self.dx8x*np.sin(Harray) + self.dx8y*np.cos(Harray)) + (self.dx1n/Rarray + self.dx5n + self.dx11a*np.cos(2*Harray) + self.dx11b*np.sin(2*Harray)) ) # rad, radians
-        self.Verr = np.abs( k*(self.dx1n*np.cos(Varray)/Rarray + self.dx2*np.cos(Varray)/Rarray + self.dx4 + self.dx5n*np.cos(Varray) + self.dx9n*np.cos(Varray)) + (-self.dx1z*np.sin(Varray)/Rarray - self.dx5z*np.sin(Varray) - self.dx9z*np.sin(Varray) + self.dx12a*np.cos(2*Varray) + self.dx12b*np.sin(2*Varray)) ) # rad, radians        
+        self.Verr = np.abs( k*(self.dx1n*np.cos(Varray)/Rarray + self.dx2*np.cos(Varray)/Rarray + self.dx4 + self.dx5n*np.cos(Varray) + self.dx9n*np.cos(Varray)) + (-self.dx1z*np.sin(Varray)/Rarray - self.dx5z*np.sin(Varray) - self.dx9z*np.sin(Varray) + self.dx12a*np.cos(2*Varray) + self.dx12b*np.sin(2*Varray)) ) # rad, radians
         
         self.Rdata = Rarray + self.Roffset # m, metres
         self.Hdata = Harray + self.Hoffset # rad, radians

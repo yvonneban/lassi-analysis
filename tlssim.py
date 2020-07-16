@@ -18,11 +18,11 @@ class tls(object):
     """
     def __init__(self, backface=False, # boolean
                  offset=(0,0,0), # m, metres
-                 x1n=-0.9e3, # m, metres
+                 x1n=-0.9e-3, # m, metres
                  dx1n=0.04e-3, # m, metres
                  x1z=-0.2e-3, # m, metres
                  dx1z=0.02e-3, # m, metres
-                 x2=-0.9e3, # m, metres
+                 x2=-0.9e-3, # m, metres
                  dx2=0.04e-3, # m, metres
                  x3=-0.3e-3, # m, metres
                  dx3=0.02e-3, # m, metres
@@ -60,11 +60,11 @@ class tls(object):
         Input:
             backface (boolean, default=False)
             offset (metres, 3-tuple of float in x,y,z, default=(0,0,0))
-            x1n (metres, float, default=-0.9e3)
+            x1n (metres, float, default=-0.9e-3)
             dx1n (metres, float, default=0.04e-3)
             x1z (metres, float, default=-0.2e-3)
             dx1z (metres, float, default=0.02e-3)
-            x2 (metres, float, default=-0.9e3)
+            x2 (metres, float, default=-0.9e-3)
             dx2 (metres, float, default=0.04e-3)
             x3 (metres, float, default=-0.3e-3)
             dx3 (metres, float, default=0.02e-3)
